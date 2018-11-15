@@ -414,13 +414,24 @@ void FastText::predict(
     std::istream& in,
     int32_t k,
     bool print_prob,
-    real threshold) {
+    real threshold,
+	bool withIds) {
   std::vector<std::pair<real, int32_t>> predictions;
+  std::string id;
+
   while (in.peek() != EOF) {
     std::vector<int32_t> words, labels;
-    dict_->getLine(in, words, labels);
+    if (withIds) {
+      dict_->getLine(in, words, labels, id);
+    } else {
+      dict_->getLine(in, words, labels);
+    }
     predictions.clear();
     predict(k, words, predictions, threshold);
+
+    if (withIds) {
+    	std::cout << id << " ";
+    }
     if (predictions.empty()) {
       std::cout << std::endl;
       continue;

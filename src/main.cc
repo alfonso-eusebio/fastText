@@ -164,16 +164,23 @@ void test(const std::vector<std::string>& args) {
 }
 
 void predict(const std::vector<std::string>& args) {
-  if (args.size() < 4 || args.size() > 6) {
+  if (args.size() < 4 || args.size() > 7) {
     printPredictUsage();
     exit(EXIT_FAILURE);
   }
   int32_t k = 1;
   real threshold = 0.0;
+  int32_t offset = 0;
+
   if (args.size() > 4) {
-    k = std::stoi(args[4]);
-    if (args.size() == 6) {
-      threshold = std::stof(args[5]);
+	if (args[4] == "-withIds") {
+		offset = 1;
+	}
+	if (args.size() > (4+offset)){
+      k = std::stoi(args[4+offset]);
+	}
+    if (args.size() > (5+offset)) {
+      threshold = std::stof(args[5+offset]);
     }
   }
 
@@ -183,14 +190,14 @@ void predict(const std::vector<std::string>& args) {
 
   std::string infile(args[3]);
   if (infile == "-") {
-    fasttext.predict(std::cin, k, print_prob, threshold);
+    fasttext.predict(std::cin, k, print_prob, threshold, (offset == 1));
   } else {
     std::ifstream ifs(infile);
     if (!ifs.is_open()) {
       std::cerr << "Input file cannot be opened!" << std::endl;
       exit(EXIT_FAILURE);
     }
-    fasttext.predict(ifs, k, print_prob, threshold);
+    fasttext.predict(ifs, k, print_prob, threshold, (offset == 1));
     ifs.close();
   }
 

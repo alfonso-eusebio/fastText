@@ -101,7 +101,7 @@ class FastText {
       const std::vector<int32_t>&,
       std::vector<std::pair<real, int32_t>>&,
       real = 0.0) const;
-  void predict(std::istream&, int32_t, bool, real = 0.0);
+  void predict(std::istream&, int32_t, bool, real = 0.0, bool = false);
   void ngramVectors(std::string);
   void precomputeWordVectors(Matrix&);
   void findNN(
