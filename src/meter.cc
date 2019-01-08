@@ -1,4 +1,13 @@
+/**
+ * Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 #include "meter.h"
+#include "utils.h"
 
 #include <algorithm>
 #include <cmath>
@@ -17,8 +26,7 @@ void Meter::log(
   for (const auto& prediction : predictions) {
     labelMetrics_[prediction.second].predicted++;
 
-    if (std::find(labels.begin(), labels.end(), prediction.second) !=
-        labels.end()) {
+    if (utils::contains(labels, prediction.second)) {
       labelMetrics_[prediction.second].predictedGold++;
       metrics_.predictedGold++;
     }

@@ -2,9 +2,8 @@
  * Copyright (c) 2016-present, Facebook, Inc.
  * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #pragma once
@@ -61,6 +60,7 @@ class Model {
   int32_t getNegative(int32_t target);
   void initSigmoid();
   void initLog();
+  void computeOutput(Vector&, Vector&) const;
 
   static const int32_t NEGATIVE_TABLE_SIZE = 10000000;
 
@@ -75,6 +75,7 @@ class Model {
   real negativeSampling(int32_t, real);
   real hierarchicalSoftmax(int32_t, real);
   real softmax(int32_t, real);
+  real oneVsAll(const std::vector<int32_t>&, real);
 
   void predict(
       const std::vector<int32_t>&,
@@ -101,8 +102,14 @@ class Model {
       std::vector<std::pair<real, int32_t>>&,
       Vector&,
       Vector&) const;
-  void update(const std::vector<int32_t>&, int32_t, real);
+  void update(
+      const std::vector<int32_t>&,
+      const std::vector<int32_t>&,
+      int32_t,
+      real);
+  real computeLoss(const std::vector<int32_t>&, int32_t, real);
   void computeHidden(const std::vector<int32_t>&, Vector&) const;
+  void computeOutputSigmoid(Vector&, Vector&) const;
   void computeOutputSoftmax(Vector&, Vector&) const;
   void computeOutputSoftmax();
 
@@ -120,6 +127,7 @@ class Model {
   setQuantizePointer(std::shared_ptr<QMatrix>, std::shared_ptr<QMatrix>, bool);
 
   static const int32_t kUnlimitedPredictions = -1;
+  static const int32_t kAllLabelsAsTarget = -1;
 };
 
 } // namespace fasttext

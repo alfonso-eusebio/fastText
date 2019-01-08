@@ -2,9 +2,8 @@
  * Copyright (c) 2017-present, Facebook, Inc.
  * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #include <args.h>
@@ -91,6 +90,7 @@ PYBIND11_MODULE(fasttext_pybind, m) {
       .value("hs", fasttext::loss_name::hs)
       .value("ns", fasttext::loss_name::ns)
       .value("softmax", fasttext::loss_name::softmax)
+      .value("ova", fasttext::loss_name::ova)
       .export_values();
 
   m.def(
@@ -262,23 +262,30 @@ PYBIND11_MODULE(fasttext_pybind, m) {
              const std::string text,
              int32_t k,
              fasttext::real threshold) {
-            std::vector<std::pair<fasttext::real, int32_t>> predictions;
-            std::vector<std::pair<fasttext::real, std::string>> all_predictions;
             std::stringstream ioss(text);
-            std::shared_ptr<const fasttext::Dictionary> d = m.getDictionary();
-            std::vector<int32_t> words, labels;
-            d->getLine(ioss, words, labels);
-            m.predict(k, words, predictions, threshold);
-            std::transform(
-                predictions.begin(),
-                predictions.end(),
-                std::back_inserter(all_predictions),
-                [&d](const auto& prediction) {
-                  return std::pair<fasttext::real, std::string>(
-                      std::exp(prediction.first),
-                      d->getLabel(prediction.second));
-                });
-            return all_predictions;
+            std::vector<std::pair<fasttext::real, std::string>> predictions;
+            m.predictLine(ioss, predictions, k, threshold);
+
+            return predictions;
+          })
+      .def(
+          "multilinePredict",
+          // NOTE: text needs to end in a newline
+          // to exactly mimic the behavior of the cli
+          [](fasttext::FastText& m,
+             const std::vector<std::string>& lines,
+             int32_t k,
+             fasttext::real threshold) {
+            std::vector<std::vector<std::pair<fasttext::real, std::string>>>
+                allPredictions;
+            std::vector<std::pair<fasttext::real, std::string>> predictions;
+
+            for (const std::string& text : lines) {
+              std::stringstream ioss(text);
+              m.predictLine(ioss, predictions, k, threshold);
+              allPredictions.push_back(predictions);
+            }
+            return allPredictions;
           })
       .def(
           "testLabel",
@@ -302,38 +309,6 @@ PYBIND11_MODULE(fasttext_pybind, m) {
             }
 
             return returnedValue;
-          })
-      .def(
-          "multilinePredict",
-          // NOTE: text needs to end in a newline
-          // to exactly mimic the behavior of the cli
-          [](fasttext::FastText& m,
-             const std::vector<std::string>& lines,
-             int32_t k,
-             fasttext::real threshold) {
-            std::pair<
-                std::vector<std::vector<fasttext::real>>,
-                std::vector<std::vector<std::string>>>
-                all_predictions;
-            std::vector<std::pair<fasttext::real, int32_t>> predictions;
-            std::shared_ptr<const fasttext::Dictionary> d = m.getDictionary();
-            std::vector<int32_t> words, labels;
-            for (const std::string& text : lines) {
-              std::stringstream ioss(text);
-              predictions.clear();
-              d->getLine(ioss, words, labels);
-              m.predict(k, words, predictions, threshold);
-              all_predictions.first.push_back(std::vector<fasttext::real>());
-              all_predictions.second.push_back(std::vector<std::string>());
-              for (auto& pair : predictions) {
-                pair.first = std::exp(pair.first);
-                all_predictions.first[all_predictions.first.size() - 1]
-                    .push_back(pair.first);
-                all_predictions.second[all_predictions.second.size() - 1]
-                    .push_back(d->getLabel(pair.second));
-              }
-            }
-            return all_predictions;
           })
       .def(
           "getWordId",
