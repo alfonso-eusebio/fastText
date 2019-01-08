@@ -447,6 +447,29 @@ bool FastText::predictLine(
   return true;
 }
 
+bool FastText::predictLineWithId(
+    std::istream& in,
+    std::vector<std::pair<real, std::string>>& predictions,
+	std::string& id,
+    int32_t k,
+    real threshold) const {
+  predictions.clear();
+  if (in.peek() == EOF) {
+    return false;
+  }
+
+  std::vector<int32_t> words, labels;
+  dict_->getLine(in, words, labels, id);	// With "id"
+  std::vector<std::pair<real, int32_t>> linePredictions;
+  predict(k, words, linePredictions, threshold);
+  for (const auto& p : linePredictions) {
+    predictions.push_back(
+        std::make_pair(std::exp(p.first), dict_->getLabel(p.second)));
+  }
+
+  return true;
+}
+
 void FastText::getSentenceVector(std::istream& in, fasttext::Vector& svec) {
   svec.zero();
   if (args_->model == model_name::sup) {

@@ -182,8 +182,12 @@ void test(const std::vector<std::string>& args) {
 void printPredictions(
     const std::vector<std::pair<real, std::string>>& predictions,
     bool printProb,
-    bool multiline) {
+    bool multiline,
+	const std::string& id = "") {
   bool first = true;
+  if (id != "") {
+    std::cout << id << " ";
+  }
   for (const auto& prediction : predictions) {
     if (!first && !multiline) {
       std::cout << " ";
@@ -239,8 +243,15 @@ void predict(const std::vector<std::string>& args) {
   }
   std::istream& in = inputIsStdIn ? std::cin : ifs;
   std::vector<std::pair<real, std::string>> predictions;
-  while (fasttext.predictLine(in, predictions, k, threshold)) {
-    printPredictions(predictions, printProb, false);
+  std::string id;
+  if (offset == 1) {
+	while (fasttext.predictLineWithId(in, predictions, id, k, threshold)) {
+	  printPredictions(predictions, printProb, false, id);
+	}
+  } else {
+	while (fasttext.predictLine(in, predictions, k, threshold)) {
+	  printPredictions(predictions, printProb, false);
+	}
   }
   if (ifs.is_open()) {
     ifs.close();
