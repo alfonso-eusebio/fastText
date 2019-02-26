@@ -58,7 +58,7 @@ In this tutorial, we mainly use the `supervised`, `test` and `predict` subcomman
 As mentioned in the introduction, we need labeled data to train our supervised classifier. In this tutorial, we are interested in building a classifier to automatically recognize the topic of a stackexchange question about cooking. Let's download examples of questions from [the cooking section of Stackexchange](http://cooking.stackexchange.com/), and their associated tags:
 
 ```bash
->> wget https://s3-us-west-1.amazonaws.com/fasttext-vectors/cooking.stackexchange.tar.gz && tar xvzf cooking.stackexchange.tar.gz
+>> wget https://dl.fbaipublicfiles.com/fasttext/data/cooking.stackexchange.tar.gz && tar xvzf cooking.stackexchange.tar.gz
 >> head cooking.stackexchange.txt
 ```
 
@@ -259,7 +259,7 @@ With a few steps, we were able to go from a precision at one of 12.4% to 59.9%. 
 
 ## Advanced readers: What is a Bigram?
 
-A 'unigram' refers to a single undividing unit, or token,  usually used as an input to a model. For example a unigram can a word or a letter depending on the model. In fastText, we work at the word level and thus unigrams are words.
+A 'unigram' refers to a single undividing unit, or token,  usually used as an input to a model. For example a unigram can be a word or a letter depending on the model. In fastText, we work at the word level and thus unigrams are words.
 
 Similarly we denote by 'bigram' the concatenation of  2 consecutive tokens or words. Similarly we often talk about n-gram to refer to the concatenation any n consecutive tokens. 
 
