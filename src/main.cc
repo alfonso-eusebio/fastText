@@ -52,9 +52,10 @@ void printTestUsage() {
 
 void printPredictUsage() {
   std::cerr
-      << "usage: fasttext predict[-prob] <model> <test-data> [<k>] [<th>]\n\n"
+      << "usage: fasttext predict[-prob] <model> <test-data> [-withIds] [<k>] [<th>]\n\n"
       << "  <model>      model filename\n"
       << "  <test-data>  test data filename (if -, read from stdin)\n"
+      << "  -widthIds    assumes the first word in each line is a 'line ID', and prepends it to each prediction\n"
       << "  <k>          (optional; 1 by default) predict top k labels\n"
       << "  <th>         (optional; 0.0 by default) probability threshold\n"
       << std::endl;
