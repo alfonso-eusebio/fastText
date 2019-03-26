@@ -199,18 +199,15 @@ or use `predict-prob` to also get the probability for each label
 $ ./fasttext predict-prob model.bin test.txt k
 ```
 
-where `test.txt` contains a piece of text to classify per line.
-Doing so will print to the standard output the k most likely labels for each line.
-The argument `k` is optional, and equal to `1` by default.
-See `classification-example.sh` for an example use case.
-In order to reproduce results from the paper [2](#bag-of-tricks-for-efficient-text-classification), run `classification-results.sh`, this will download all the datasets and reproduce the results from Table 1.
+##### Adding IDs
 
-In certain scenarios it might be useful to be able to link predictions back to the original lines in your `test.txt` file. For this you can use the `-withIds` option (after the input file name), which would assume that the first word in each line is an ID for the line.
+In certain scenarios it might be useful to be able to link predictions back to the original lines in your `test.txt` file. For this you can use the `-withIds` option, which would assume that the first word in each line is an ID for the line.
 If you prepend an ID to each line in `test.txt` (separated with a space from the rest of the line) the output from `predict`/`predict-prop` would include the line ID before each prediction.
-This would facilitate the association of each prediction with the associated text. (This works for in cases where stdin is used for input.)
+This would facilitate the association of each prediction with the associated text. (`-withIds` works in cases where stdin is used for input)
 
 ```
 $ ./fasttext predict-prob model.bin test.txt -withIds k
+$ ./fasttext predict model.bin - -withIds k
 ```
 
 If you want to compute vector representations of sentences or paragraphs, please use:
