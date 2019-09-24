@@ -67,7 +67,7 @@ const siteConfig = {
   /* header links for links on this site */
   headerLinks: [
     { doc: "support", label: "Docs" },
-    { doc: "english-vectors", label: "Download" },
+    { doc: "english-vectors", label: "Resources" },
     { blog: true, label: "Blog" },
     {
       href: "https://github.com/facebookresearch/fastText/",
@@ -96,7 +96,10 @@ const siteConfig = {
   /* remove this to disable google analytics tracking */
   gaTrackingId: "UA-44373548-30",
   ogImage: "img/ogimage.png",
-  useEnglishUrl: true
+  useEnglishUrl: true,
+  scripts: [
+    '/tabber.js',
+  ],
 };
 
 module.exports = siteConfig;

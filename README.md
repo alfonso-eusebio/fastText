@@ -59,7 +59,7 @@ These include :
 Compilation is carried out using a Makefile, so you will need to have a working **make**.
 If you want to use **cmake** you need at least version 2.8.9.
 
-One of the oldest distributions we successfully built and tested the CLI under is [Debian wheezy](https://www.debian.org/releases/wheezy/).
+One of the oldest distributions we successfully built and tested the CLI under is [Debian jessie](https://www.debian.org/releases/jessie/).
 
 For the word-similarity evaluation script you will need:
 
@@ -89,9 +89,9 @@ There is also the master branch that contains all of our most recent work, but c
 ### Building fastText using make (preferred)
 
 ```
-$ wget https://github.com/facebookresearch/fastText/archive/v0.2.0.zip
-$ unzip v0.2.0.zip
-$ cd fastText-0.2.0
+$ wget https://github.com/facebookresearch/fastText/archive/v0.9.1.zip
+$ unzip v0.9.1.zip
+$ cd fastText-0.9.1
 $ make
 ```
 
