@@ -9,12 +9,10 @@
 #include "autotune.h"
 
 #include <algorithm>
-#include <cassert>
 #include <csignal>
 #include <functional>
 #include <iomanip>
 #include <iostream>
-#include <numeric>
 #include <random>
 #include <thread>
 
@@ -386,6 +384,8 @@ void Autotune::train(const Args& autotuneArgs) {
     trials_++;
 
     trainArgs = strategy_->ask(elapsed_);
+    LOG_VAL(Trial, trials_)
+    printArgs(trainArgs, autotuneArgs);
     ElapsedTimeMarker elapsedTimeMarker;
     double currentScore = std::numeric_limits<double>::quiet_NaN();
     try {
@@ -420,13 +420,13 @@ void Autotune::train(const Args& autotuneArgs) {
       }
     } catch (DenseMatrix::EncounteredNaNError&) {
       // ignore diverging loss and go on
+    } catch (std::bad_alloc&) {
+      // ignore parameter samples asking too much memory
     } catch (TimeoutError&) {
       break;
     } catch (FastText::AbortError&) {
       break;
     }
-    LOG_VAL(Trial, trials_)
-    printArgs(trainArgs, autotuneArgs);
     LOG_VAL_NAN(currentScore, currentScore)
     LOG_VAL(train took, elapsedTimeMarker.getElapsed())
   }
